@@ -1,0 +1,1745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Solo Leveling RPG System</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ---- Root & Base Styles ---- */
+    * { 
+      margin: 0; 
+      padding: 0; 
+      box-sizing: border-box; 
+      font-family: , sans-serif; 
+      font-size: 19px;
+    }
+    :root {
+      --primary: #0ff;
+      --accent: #ff5500;
+      --dark: #010108;
+      --bg-darker: #000;
+      --radius: 12px;
+      --transition: 0.3s;
+      --glow: 0 0 15px var(--primary);
+      --focus-glow: 0 0 20px rgba(255, 0, 98, 0.7);
+      --prayer-glow: 0 0 20px rgba(0, 255, 149, 0.7);
+      --subject-glow: 0 0 20px rgba(0, 140, 255, 0.7);
+    }
+    body { 
+      background: radial-gradient(circle at center, #0a0a2a, #000000);
+      color: #fff; 
+      overflow-x: hidden; 
+      min-height: 100vh;
+      position: relative;
+    }
+    a, button { outline: none; border: none; background: none; cursor: pointer; }
+
+    /* ---- Welcome Page ---- */
+    #welcome-page {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: var(--bg-darker);
+      display: flex; 
+      flex-direction: column; 
+      justify-content: center; 
+      align-items: center;
+      z-index: 100;
+      overflow: hidden;
+    }
+    #background-video {
+      position: absolute; 
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      opacity: 0.3;
+    }
+    .welcome-content {
+      position: relative;
+      z-index: 11;
+      text-align: center;
+      max-width: 800px;
+      padding: 20px;
+    }
+    .welcome-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 4rem;
+      margin-bottom: 20px;
+      color: var(--primary);
+      text-shadow: 0 0 15px var(--primary);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+    .welcome-subtitle {
+      font-size: 1.5rem;
+      margin-bottom: 40px;
+      color: #a0a0ff;
+      line-height: 1.6;
+      text-shadow: 0 0 10px rgba(160, 160, 255, 0.5);
+    }
+    .enter-btn {
+      padding: 16px 48px;
+      border: 2px solid var(--primary);
+      border-radius: 50px;
+      color: var(--primary);
+      font-size: 1.4rem;
+      font-weight: 600;
+      transition: var(--transition);
+      position: relative;
+      z-index: 11;
+      background: rgba(0, 0, 0, 0.7);
+      box-shadow: 0 0 20px var(--primary);
+      letter-spacing: 1px;
+      margin-top: 30px;
+      font-family: 'Orbitron', sans-serif;
+      text-transform: uppercase;
+    }
+    .enter-btn:hover {
+      background: var(--primary);
+      color: var(--dark);
+      box-shadow: 0 0 30px var(--primary);
+      transform: translateY(-3px);
+    }
+    /* Scroll Indicator */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 40px;
+      font-size: 2rem;
+      color: var(--primary);
+      animation: bounce 1.5s infinite;
+      z-index: 11;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    .particles {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+    .particle {
+      position: absolute;
+      background: var(--primary);
+      border-radius: 50%;
+      opacity: 0.7;
+      animation: float 15s infinite linear;
+    }
+    @keyframes float {
+      0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+      10% { opacity: 0.7; }
+      90% { opacity: 0.7; }
+      100% { transform: translateY(-100px) translateX(calc(100vw * var(--x))); opacity: 0; }
+    }
+
+    /* ---- Planner System ---- */
+    #planner-system { 
+      display: none; 
+      padding: 20px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .system-header {
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center;
+      padding: 16px 30px; 
+      background: linear-gradient(90deg, rgba(0,0,0,0.8), rgba(10,10,40,0.8));
+      border-radius: var(--radius);
+      margin-bottom: 20px;
+      border: 1px solid rgba(0, 255, 255, 0.3);
+      box-shadow: var(--glow);
+    }
+    .logo {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.2rem;
+      color: var(--primary);
+      text-shadow: 0 0 10px var(--primary);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    .date-display { 
+      font-size: 1.2rem; 
+      color: #a0a0ff;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 8px 20px;
+      border-radius: 30px;
+      border: 1px solid rgba(0, 255, 255, 0.2);
+      font-family: 'Orbitron', sans-serif;
+    }
+    .streak-display {
+      display: flex; 
+      align-items: center; 
+      gap: 8px;
+      background: linear-gradient(45deg, rgba(255,85,0,0.2), rgba(0,0,0,0.5));
+      padding: 10px 20px; 
+      border-radius: 30px;
+      border: 1px solid rgba(255, 85, 0, 0.3);
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+    .streak-display i { 
+      color: var(--accent); 
+      animation: pulseFire 1.5s infinite; 
+      font-size: 1.4rem;
+    }
+    @keyframes pulseFire { 
+      0%,100%{ text-shadow:0 0 10px var(--accent);} 
+      50%{text-shadow:0 0 20px var(--accent);} 
+    }
+
+    /* ---- Dashboard Layout ---- */
+    .dashboard { 
+      display: grid; 
+      grid-template-columns: 280px 1fr; 
+      gap: 20px;
+      height: calc(100vh - 100px);
+    }
+    .sidebar {
+      background: linear-gradient(180deg, rgba(0,0,0,0.7), rgba(10,10,40,0.8));
+      padding: 20px 0;
+      border-radius: var(--radius);
+      display: flex; 
+      flex-direction: column; 
+      gap: 8px;
+      height: 100%;
+      overflow-y: auto;
+      border: 1px solid rgba(0, 255, 255, 0.2);
+      box-shadow: var(--glow);
+    }
+    .nav-item {
+      display: flex; 
+      align-items: center; 
+      gap: 12px;
+      padding: 14px 20px;
+      border-radius: 0;
+      color: #ccc; 
+      transition: var(--transition);
+      font-size: 1.1rem;
+      font-weight: 500;
+      border-left: 4px solid transparent;
+      font-family: ; sans-serif;
+    }
+    .nav-item i { 
+      width: 24px; 
+      text-align: center;
+      font-size: 1.2rem;
+    }
+    .nav-item.active, .nav-item:hover {
+      background: linear-gradient(90deg, rgba(0,255,255,0.2), transparent);
+      color: var(--primary);
+      border-left: 4px solid var(--primary);
+      text-shadow: 0 0 10px var(--primary);
+    }
+    .main-content {
+      background: linear-gradient(135deg, rgba(0,0,0,0.7), rgba(10,10,40,0.8));
+      padding: 25px;
+      border-radius: var(--radius);
+      height: 100%;
+      overflow-y: auto;
+      border: 1px solid rgba(0, 255, 255, 0.2);
+      box-shadow: var(--glow);
+    }
+    .section-title {
+      display: flex; 
+      align-items: center; 
+      gap: 10px;
+      font-size: 1.5rem; 
+      color: var(--primary);
+      margin-bottom: 25px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+      font-family: 'Orbitron', sans-serif;
+      text-transform: uppercase;
+    }
+    .section-title i {
+      font-size: 1.8rem;
+    }
+
+    /* ---- Cards Grid ---- */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    .card {
+      background: linear-gradient(135deg, rgba(0,0,0,0.5), rgba(20,20,60,0.6));
+      padding: 20px; 
+      border-radius: var(--radius);
+      text-align: center;
+      border: 1px solid rgba(0, 255, 255, 0.1);
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--glow);
+      border-color: var(--primary);
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: var(--primary);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.5s ease;
+    }
+    .card:hover::before {
+      transform: scaleX(1);
+    }
+    .card .icon { 
+      font-size: 2.2rem; 
+      color: var(--accent); 
+      margin-bottom: 12px;
+      text-shadow: 0 0 10px var(--accent);
+    }
+    .metric { 
+      font-size: 2rem; 
+      font-weight: 700;
+      margin: 8px 0;
+      color: var(--primary);
+      text-shadow: 0 0 8px var(--primary);
+    }
+    .card-label {
+      font-size: 1rem;
+      color: #aaa;
+      letter-spacing: 1px;
+    }
+
+    /* ---- Controls ---- */
+    .control-panel {
+      background: linear-gradient(135deg, rgba(0,0,0,0.5), rgba(20,20,60,0.6));
+      padding: 25px;
+      border-radius: var(--radius);
+      margin-top: 30px;
+      border: 1px solid rgba(0, 255, 255, 0.1);
+    }
+    .panel-title {
+      font-size: 1.3rem;
+      color: var(--accent);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Orbitron', sans-serif;
+    }
+    .input-group {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+      align-items: center;
+    }
+    .input-group label {
+      min-width: 120px;
+      color: #aaa;
+    }
+    input, select {
+      padding: 10px 15px;
+      border-radius: 8px;
+      border: 1px solid rgba(0, 255, 255, 0.2);
+      background: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      font-size: 1rem;
+      flex: 1;
+      max-width: 300px;
+    }
+    input:focus, select:focus {
+      border-color: var(--primary);
+      outline: none;
+      box-shadow: 0 0 10px var(--primary);
+    }
+    button {
+      background: linear-gradient(45deg, var(--accent), #ff8800);
+      color: #000;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: var(--transition);
+      font-weight: 600;
+      font-size: 1rem;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Orbitron', sans-serif;
+    }
+    button:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(255, 85, 0, 0.4);
+    }
+    .btn-primary {
+      background: linear-gradient(45deg, var(--primary), #00ccff);
+      color: #000;
+    }
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 0.9rem;
+    }
+    .timer-display {
+      font-size: 3rem;
+      font-family: 'Orbitron', sans-serif;
+      color: var(--primary);
+      text-shadow: 0 0 10px var(--primary);
+      text-align: center;
+      margin: 20px 0;
+    }
+    .timer-controls {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    /* ---- Vault List ---- */
+    .vault-list { 
+      margin-top: 20px;
+      max-height: 300px;
+      overflow-y: auto;
+      padding-right: 10px;
+    }
+    .vault-item {
+      display: flex; 
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.5); 
+      padding: 15px; 
+      border-radius: 8px;
+      margin-bottom: 12px;
+      border: 1px solid rgba(0, 255, 255, 0.1);
+      transition: var(--transition);
+    }
+    .vault-item:hover {
+      border-color: var(--primary);
+      background: rgba(0, 0, 0, 0.7);
+    }
+    .vault-item .content {
+      flex: 1;
+      padding-right: 15px;
+    }
+    .vault-item .actions {
+      display: flex;
+      gap: 8px;
+    }
+    .empty-state {
+      text-align: center;
+      padding: 30px;
+      color: #777;
+      font-size: 1.1rem;
+    }
+    .empty-state i {
+      font-size: 3rem;
+      margin-bottom: 15px;
+      color: var(--accent);
+    }
+
+    /* Prayer Section */
+    .prayer-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+    .prayer-card {
+      background: linear-gradient(135deg, rgba(0,0,0,0.5), rgba(20,20,60,0.6));
+      padding: 20px;
+      border-radius: var(--radius);
+      text-align: center;
+      border: 1px solid rgba(0, 255, 255, 0.1);
+      transition: var(--transition);
+      cursor: pointer;
+    }
+    .prayer-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(0, 255, 255, 0.2);
+    }
+    .prayer-card.completed {
+      border-color: var(--accent);
+      box-shadow: 0 0 15px rgba(255, 85, 0, 0.3);
+    }
+    .prayer-card .prayer-name {
+      font-size: 1.3rem;
+      color: var(--primary);
+      margin-bottom: 10px;
+    }
+    .prayer-card .prayer-time {
+      font-size: 1.1rem;
+      color: #aaa;
+      margin-bottom: 15px;
+    }
+    .prayer-status {
+      font-size: 0.9rem;
+      padding: 5px 10px;
+      border-radius: 20px;
+      background: rgba(255, 85, 0, 0.2);
+      color: var(--accent);
+    }
+    .prayer-card.completed .prayer-status {
+      background: rgba(0, 255, 255, 0.2);
+      color: var(--primary);
+    }
+
+    /* Tasks Section */
+    .task-list {
+      margin-top: 20px;
+    }
+    .task-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 15px;
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 8px;
+      margin-bottom: 10px;
+      border: 1px solid rgba(0, 255, 255, 0.1);
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+    .task-item:hover {
+      background: rgba(0, 0, 0, 0.6);
+      border-color: var(--primary);
+      box-shadow: var(--glow);
+    }
+    .task-item.completed .task-text {
+      text-decoration: line-through;
+      color: #777;
+    }
+    .task-checkbox {
+      width: 22px;
+      height: 22px;
+      border: 2px solid var(--primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .task-item.completed .task-checkbox {
+      background: var(--primary);
+    }
+    .task-item.completed .task-checkbox::after {
+      content: '\f00c';
+      font-family: 'Font Awesome 5 Free';
+      font-weight: 900;
+      color: #000;
+      font-size: 12px;
+    }
+    .task-text {
+      flex: 1;
+      font-size: 1.1rem;
+    }
+    .task-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .add-task-form {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .add-task-form input {
+      flex: 1;
+      padding: 12px 15px;
+    }
+
+    /* Focus Timer Theme */
+    #focusTab {
+      background: linear-gradient(135deg, rgba(20, 0, 20, 0.8), rgba(40, 0, 30, 0.9));
+      border: 1px solid rgba(255, 0, 98, 0.3);
+      box-shadow: var(--focus-glow);
+    }
+
+    /* Subjects Theme */
+    #subjectsTab {
+      background: linear-gradient(135deg, rgba(0, 20, 40, 0.8), rgba(0, 30, 50, 0.9));
+      border: 1px solid rgba(0, 140, 255, 0.3);
+      box-shadow: var(--subject-glow);
+    }
+
+    /* Prayer Theme */
+    #prayerTab {
+      background: linear-gradient(135deg, rgba(0, 40, 20, 0.8), rgba(0, 50, 30, 0.9));
+      border: 1px solid rgba(0, 255, 149, 0.3);
+      box-shadow: var(--prayer-glow);
+    }
+
+    /* Notification System */
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 15px 25px;
+      background: linear-gradient(45deg, var(--accent), #ff8800);
+      color: #000;
+      border-radius: 8px;
+      font-weight: bold;
+      z-index: 1000;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+      transform: translateX(120%);
+      transition: transform 0.5s ease;
+      font-family: 'Orbitron', sans-serif;
+    }
+    .notification.show {
+      transform: translateX(0);
+    }
+
+    /* Progress Bar */
+    .progress-container {
+      background: rgba(0,0,0,0.4);
+      border-radius: 10px;
+      padding: 3px;
+      margin-top: 15px;
+    }
+    .progress-bar {
+      height: 20px;
+      background: rgba(0,0,0,0.3);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), #00ccff);
+      border-radius: 8px;
+      transition: width 0.5s ease;
+      width: 0%;
+    }
+    .progress-text {
+      text-align: center;
+      margin-top: 8px;
+      font-weight: bold;
+      color: var(--primary);
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    /* History View */
+    .history-view {
+      background: rgba(0,0,0,0.5);
+      padding: 20px;
+      border-radius: var(--radius);
+      margin-top: 20px;
+      border: 1px solid rgba(0, 255, 255, 0.2);
+    }
+    .history-controls {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    .history-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
+    }
+    .history-card {
+      background: rgba(0,0,0,0.3);
+      padding: 15px;
+      border-radius: 8px;
+      border: 1px solid rgba(0, 255, 255, 0.1);
+    }
+    .history-date {
+      font-weight: bold;
+      color: var(--primary);
+      margin-bottom: 10px;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .dashboard {
+        grid-template-columns: 1fr;
+        height: auto;
+      }
+      .sidebar {
+        height: auto;
+        margin-bottom: 20px;
+      }
+      .welcome-title {
+        font-size: 2.5rem;
+      }
+    }
+    @media (max-width: 600px) {
+      .system-header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+      }
+      .input-group {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .input-group input, .input-group select {
+        max-width: 100%;
+        width: 100%;
+      }
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Welcome Page -->
+  <div id="welcome-page">
+    <video id="background-video" autoplay muted loop>
+      <source src="solo.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+    <div class="particles" id="particles"></div>
+    <div class="welcome-content">
+      <h1 class="welcome-title">SOLO LEVELING RPG SYSTEM</h1>
+      <p class="welcome-subtitle">Level up your productivity with this gamified planner. Track your tasks, focus time, habits, and achievements as you progress through your daily quests. Become the ultimate hunter of your goals!</p>
+      <button class="enter-btn" id="enterBtn">
+        <i class="fas fa-dungeon"></i> ENTER THE SYSTEM
+      </button>
+    </div>
+    <div class="scroll-indicator"><i class="fas fa-mouse"></i><br><i class="fas fa-chevron-down"></i></div>
+  </div>
+
+  <!-- Planner System -->
+  <div id="planner-system">
+    <div class="system-header">
+      <div class="logo">SOLO LEVELING</div>
+      <div class="date-display" id="currentDate"></div>
+      <div class="streak-display"><i class="fas fa-fire"></i> <span id="streakVal">0</span> DAY STREAK</div>
+    </div>
+    <div class="dashboard">
+      <div class="sidebar">
+        <div class="nav-item active" data-tab="dashboardTab"><i class="fas fa-tachometer-alt"></i>Dashboard</div>
+        <div class="nav-item" data-tab="tasksTab"><i class="fas fa-tasks"></i>Tasks</div>
+        <div class="nav-item" data-tab="focusTab"><i class="fas fa-hourglass-half"></i>Focus Timer</div>
+        <div class="nav-item" data-tab="hydrationTab"><i class="fas fa-glass-water"></i>Hydration</div>
+        <div class="nav-item" data-tab="sleepTab"><i class="fas fa-bed"></i>Sleep</div>
+        <div class="nav-item" data-tab="subjectsTab"><i class="fas fa-book"></i>Subjects</div>
+        <div class="nav-item" data-tab="prayerTab"><i class="fas fa-mosque"></i>Prayer</div>
+        <div class="nav-item" data-tab="vaultTab"><i class="fas fa-vault"></i>Memory Vault</div>
+        <div class="nav-item" data-tab="historyTab"><i class="fas fa-history"></i>History</div>
+      </div>
+      <div class="main-content">
+        <!-- Dashboard Tab -->
+        <div id="dashboardTab">
+          <div class="section-title"><i class="fas fa-tachometer-alt"></i>Player Dashboard</div>
+          <div class="stats-grid">
+            <div class="card">
+              <span class="icon"><i class="fas fa-tasks"></i></span>
+              <div class="metric" id="taskDone">0/0</div>
+              <div class="card-label">Tasks Completed</div>
+            </div>
+            <div class="card">
+              <span class="icon"><i class="fas fa-fire"></i></span>
+              <div class="metric" id="streakDone">0</div>
+              <div class="card-label">Current Streak</div>
+            </div>
+            <div class="card">
+              <span class="icon"><i class="fas fa-clock"></i></span>
+              <div class="metric" id="focusRead">0</div>
+              <div class="card-label">Focus Minutes</div>
+            </div>
+            <div class="card">
+              <span class="icon"><i class="fas fa-glass-water"></i></span>
+              <div class="metric" id="waterRead">0</div>
+              <div class="card-label">Water Glasses</div>
+            </div>
+            <div class="card">
+              <span class="icon"><i class="fas fa-moon"></i></span>
+              <div class="metric" id="sleepRead">0</div>
+              <div class="card-label">Sleep Hours</div>
+            </div>
+            <div class="card">
+              <span class="icon"><i class="fas fa-graduation-cap"></i></span>
+              <div class="metric" id="subRead">0</div>
+              <div class="card-label">Study Minutes</div>
+            </div>
+          </div>
+          
+          <div class="control-panel">
+            <div class="panel-title"><i class="fas fa-trophy"></i> Daily Progress</div>
+            <div class="progress-container">
+              <div class="progress-bar">
+                <div class="progress-fill" id="dailyProgress" style="width: 0%;"></div>
+              </div>
+              <div class="progress-text" id="progressText">0% Complete</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Tasks Tab -->
+        <div id="tasksTab" style="display: none;">
+          <div class="section-title"><i class="fas fa-tasks"></i>Quest Log</div>
+          
+          <div class="add-task-form">
+            <input type="text" id="newTaskInput" placeholder="Add a new quest...">
+            <button class="btn-primary" onclick="addTask()"><i class="fas fa-plus"></i> Add Quest</button>
+          </div>
+          
+          <div class="task-list" id="taskList">
+            <!-- Tasks will be added here dynamically -->
+          </div>
+        </div>
+        
+        <!-- Focus Timer Tab -->
+        <div id="focusTab" style="display: none;">
+          <div class="section-title"><i class="fas fa-hourglass-half"></i>Focus Chamber</div>
+          
+          <div class="timer-display" id="focusTimer">25:00</div>
+          
+          <div class="timer-controls">
+            <button class="btn-primary" id="startFocusBtn"><i class="fas fa-play"></i> Start Focus</button>
+            <button id="stopFocusBtn" style="display: none;"><i class="fas fa-stop"></i> End Focus</button>
+            <button onclick="resetFocusTimer()"><i class="fas fa-undo"></i> Reset</button>
+          </div>
+          
+          <div class="control-panel">
+            <div class="panel-title"><i class="fas fa-chart-line"></i> Focus Stats</div>
+            <div class="input-group">
+              <label>Today's Focus:</label>
+              <div id="todayFocus">0 minutes</div>
+            </div>
+            <div class="input-group">
+              <label>Weekly Average:</label>
+              <div id="weeklyFocus">0 minutes</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Hydration Tab -->
+        <div id="hydrationTab" style="display: none;">
+          <div class="section-title"><i class="fas fa-glass-water"></i>Hydration Station</div>
+          
+          <div class="stats-grid">
+            <div class="card">
+              <span class="icon"><i class="fas fa-tint"></i></span>
+              <div class="metric" id="waterCount">0</div>
+              <div class="card-label">Glasses Today</div>
+            </div>
+            <div class="card">
+              <span class="icon"><i class="fas fa-calendar-day"></i></span>
+              <div class="metric" id="waterGoal">8</div>
+              <div class="card-label">Daily Goal</div>
+            </div>
+          </div>
+          
+          <div class="control-panel">
+            <div class="panel-title"><i class="fas fa-plus-circle"></i> Add Hydration</div>
+            <div class="input-group">
+              <button class="btn-primary" onclick="addWater(1)"><i class="fas fa-plus"></i> Add 1 Glass</button>
+              <button class="btn-primary" onclick="addWater(2)"><i class="fas fa-plus"></i> Add 2 Glasses</button>
+              <button onclick="resetWater()"><i class="fas fa-undo"></i> Reset</button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Sleep Tab -->
+        <div id="sleepTab" style="display: none;">
+          <div class="section-title"><i class="fas fa-bed"></i>Sleep Sanctuary</div>
+          
+          <div class="control-panel">
+            <div class="panel-title"><i class="fas fa-moon"></i> Log Last Night's Sleep</div>
+            <div class="input-group">
+              <label>Sleep Duration:</label>
+              <input type="number" id="sleepInput" min="0" max="12" step="0.5" value="7.5">
+              <span>hours</span>
+            </div>
+            <button class="btn-primary" onclick="saveSleep()"><i class="fas fa-save"></i> Save Sleep Data</button>
+          </div>
+          
+          <div class="control-panel" style="margin-top: 25px;">
+            <div class="panel-title"><i class="fas fa-history"></i> Sleep History</div>
+            <div class="input-group">
+              <label>Last 7 Days Avg:</label>
+              <div id="weeklySleep">0 hours</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Subjects Tab -->
+        <div id="subjectsTab" style="display: none;">
+          <div class="section-title"><i class="fas fa-book"></i>Knowledge Forge</div>
+          
+          <div class="control-panel">
+            <div class="panel-title"><i class="fas fa-play-circle"></i> Study Session</div>
+            <div class="input-group">
+              <label>Select Subject:</label>
+              <select id="subSelect">
+                <option value="chemistry">Chemistry</option>
+                <option value="physics">Physics</option>
+                <option value="maths">Mathematics</option>
+                <option value="biology">Biology</option>
+                <option value="english">English</option>
+                <option value="coding">Coding</option>
+              </select>
+            </div>
+            
+            <div class="timer-display" id="subjectTimer">00:00</div>
+            
+            <div class="timer-controls">
+              <button class="btn-primary" id="startSubBtn"><i class="fas fa-play"></i> Start Session</button>
+              <button id="stopSubBtn" style="display: none;"><i class="fas fa-stop"></i> End Session</button>
+            </div>
+          </div>
+          
+          <div class="control-panel" style="margin-top: 25px;">
+            <div class="panel-title"><i class="fas fa-chart-pie"></i> Subject Breakdown</div>
+            <div id="subjectStats">
+              <!-- Subject stats will be added here -->
+            </div>
+          </div>
+        </div>
+        
+        <!-- Prayer Tab -->
+        <div id="prayerTab" style="display: none;">
+          <div class="section-title"><i class="fas fa-mosque"></i>Spiritual Grounds</div>
+          
+          <div class="control-panel">
+            <div class="panel-title"><i class="fas fa-cog"></i> Prayer Times</div>
+            <div class="input-group">
+              <label>Fajr:</label>
+              <input type="time" id="fajrTime" value="05:30">
+            </div>
+            <div class="input-group">
+              <label>Dhuhr:</label>
+              <input type="time" id="dhuhrTime" value="12:30">
+            </div>
+            <div class="input-group">
+              <label>Asr:</label>
+              <input type="time" id="asrTime" value="16:00">
+            </div>
+            <div class="input-group">
+              <label>Maghrib:</label>
+              <input type="time" id="maghribTime" value="18:15">
+            </div>
+            <div class="input-group">
+              <label>Isha:</label>
+              <input type="time" id="ishaTime" value="20:00">
+            </div>
+            <button class="btn-primary" onclick="savePrayerTimes()"><i class="fas fa-save"></i> Save Times</button>
+          </div>
+          
+          <div class="prayer-grid">
+            <div class="prayer-card" data-prayer="fajr">
+              <div class="prayer-name">Fajr</div>
+              <div class="prayer-time" id="fajrDisplay">5:30 AM</div>
+              <div class="prayer-status">Pending</div>
+            </div>
+            <div class="prayer-card" data-prayer="dhuhr">
+              <div class="prayer-name">Dhuhr</div>
+              <div class="prayer-time" id="dhuhrDisplay">12:30 PM</div>
+              <div class="prayer-status">Pending</div>
+            </div>
+            <div class="prayer-card" data-prayer="asr">
+              <div class="prayer-name">Asr</div>
+              <div class="prayer-time" id="asrDisplay">4:00 PM</div>
+              <div class="prayer-status">Pending</div>
+            </div>
+            <div class="prayer-card" data-prayer="maghrib">
+              <div class="prayer-name">Maghrib</div>
+              <div class="prayer-time" id="maghribDisplay">6:15 PM</div>
+              <div class="prayer-status">Pending</div>
+            </div>
+            <div class="prayer-card" data-prayer="isha">
+              <div class="prayer-name">Isha</div>
+              <div class="prayer-time" id="ishaDisplay">8:00 PM</div>
+              <div class="prayer-status">Pending</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Vault Tab -->
+        <div id="vaultTab" style="display: none;">
+          <div class="section-title"><i class="fas fa-vault"></i>Memory Vault</div>
+          
+          <div class="control-panel">
+            <div class="panel-title"><i class="fas fa-plus-circle"></i> Add Memory</div>
+            <div class="input-group">
+              <input type="text" id="vaultInput" placeholder="Record something memorable...">
+              <button class="btn-primary" onclick="addVault()"><i class="fas fa-plus"></i> Add</button>
+            </div>
+          </div>
+          
+          <div class="vault-list" id="vaultList">
+            <!-- Vault items will be added here -->
+          </div>
+        </div>
+        
+        <!-- History Tab -->
+        <div id="historyTab" style="display: none;">
+          <div class="section-title"><i class="fas fa-history"></i>System History</div>
+          
+          <div class="history-controls">
+            <input type="date" id="historyDate" value="">
+            <button class="btn-primary" onclick="loadHistory()"><i class="fas fa-search"></i> Load Day</button>
+          </div>
+          
+          <div class="history-view" id="historyView">
+            <div class="empty-state">
+              <i class="fas fa-calendar-day"></i>
+              <p>Select a date to view past stats</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Notification Container -->
+  <div class="notification" id="notification">Notification</div>
+
+  <script>
+    // Initialize the system
+    document.addEventListener('DOMContentLoaded', function() {
+      // Create floating particles
+      createParticles();
+      
+      // Set current date
+      const now = new Date();
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      document.getElementById('currentDate').textContent = now.toLocaleDateString('en-US', options);
+      
+      // Set history date to today by default
+      document.getElementById('historyDate').valueAsDate = now;
+      
+      // Initialize localStorage data
+      initData();
+      
+      // Set up event listeners
+      setupEventListeners();
+      
+      // Refresh UI
+      refreshUI();
+      
+      // Restore last active tab
+      const lastTab = localStorage.getItem('lastTab') || 'dashboardTab';
+      document.querySelectorAll('.nav-item').forEach(item => {
+        if(item.dataset.tab === lastTab) {
+          item.classList.add('active');
+          document.getElementById(lastTab).style.display = 'block';
+        } else {
+          item.classList.remove('active');
+          document.getElementById(item.dataset.tab).style.display = 'none';
+        }
+      });
+    });
+
+    // Create floating particles for background
+    function createParticles() {
+      const container = document.getElementById('particles');
+      const particleCount = 30;
+      
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.classList.add('particle');
+        
+        // Random properties
+        const size = Math.random() * 10 + 2;
+        const posX = Math.random() * 100;
+        const duration = Math.random() * 20 + 10;
+        const delay = Math.random() * 5;
+        
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        particle.style.left = `${posX}%`;
+        particle.style.setProperty('--x', Math.random() * 0.4 - 0.2);
+        particle.style.animationDuration = `${duration}s`;
+        particle.style.animationDelay = `${delay}s`;
+        
+        container.appendChild(particle);
+      }
+    }
+
+    // Initialize data in localStorage
+    function initData() {
+      if (!localStorage.getItem('tasks')) {
+        localStorage.setItem('tasks', JSON.stringify([]));
+      }
+      
+      if (!localStorage.getItem('water')) {
+        localStorage.setItem('water', '0');
+      }
+      
+      if (!localStorage.getItem('sleep')) {
+        localStorage.setItem('sleep', '0');
+      }
+      
+      if (!localStorage.getItem('focus')) {
+        localStorage.setItem('focus', '0');
+      }
+      
+      // Initialize subject times
+      const subjects = ['chemistry', 'physics', 'maths', 'biology', 'english', 'coding'];
+      subjects.forEach(sub => {
+        if (!localStorage.getItem(`sub_${sub}`)) {
+          localStorage.setItem(`sub_${sub}`, '0');
+        }
+      });
+      
+      // Initialize streak if not set
+      const today = new Date().toLocaleDateString();
+      const lastDate = localStorage.getItem('lastDate');
+      let streak = parseInt(localStorage.getItem('streak') || 0);
+      
+      if (lastDate !== today) {
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        
+        if (lastDate === yesterday.toLocaleDateString()) {
+          streak++;
+        } else {
+          streak = 1;
+        }
+        
+        localStorage.setItem('streak', streak);
+        localStorage.setItem('lastDate', today);
+      }
+      
+      // Initialize prayer data
+      if (!localStorage.getItem('prayers')) {
+        localStorage.setItem('prayers', JSON.stringify({
+          fajr: false,
+          dhuhr: false,
+          asr: false,
+          maghrib: false,
+          isha: false
+        }));
+      }
+      
+      // Initialize prayer times
+      if (!localStorage.getItem('prayerTimes')) {
+        localStorage.setItem('prayerTimes', JSON.stringify({
+          fajr: "05:30",
+          dhuhr: "12:30",
+          asr: "16:00",
+          maghrib: "18:15",
+          isha: "20:00"
+        }));
+      }
+      
+      // Initialize vault
+      const todayKey = new Date().toLocaleDateString().replace(/\//g, '-');
+      if (!localStorage.getItem(`vault_${todayKey}`)) {
+        localStorage.setItem(`vault_${todayKey}`, JSON.stringify([]));
+      }
+    }
+
+    // Set up event listeners
+    function setupEventListeners() {
+      // Welcome screen enter button
+      document.getElementById('enterBtn').addEventListener('click', function() {
+        document.getElementById('welcome-page').style.display = 'none';
+        document.getElementById('planner-system').style.display = 'block';
+      });
+      
+      // Navigation tabs
+      document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', function() {
+          // Update active tab
+          document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+          this.classList.add('active');
+          
+          // Store last active tab
+          localStorage.setItem('lastTab', this.dataset.tab);
+          
+          // Show selected tab
+          document.querySelectorAll('.main-content > div').forEach(tab => {
+            tab.style.display = 'none';
+          });
+          document.getElementById(this.dataset.tab).style.display = 'block';
+          
+          // Special initialization for prayer tab
+          if(this.dataset.tab === 'prayerTab') {
+            loadPrayerTimes();
+          }
+          
+          refreshUI();
+        });
+      });
+      
+      // Prayer cards
+      document.querySelectorAll('.prayer-card').forEach(card => {
+        card.addEventListener('click', function() {
+          const prayer = this.dataset.prayer;
+          togglePrayer(prayer);
+        });
+      });
+      
+      // Focus timer controls
+      document.getElementById('startFocusBtn').addEventListener('click', startFocusTimer);
+      document.getElementById('stopFocusBtn').addEventListener('click', stopFocusTimer);
+      
+      // Subject timer controls
+      document.getElementById('startSubBtn').addEventListener('click', startSubjectTimer);
+      document.getElementById('stopSubBtn').addEventListener('click', stopSubjectTimer);
+    }
+
+    // Show notification
+    function showNotification(message) {
+      const notification = document.getElementById('notification');
+      notification.textContent = message;
+      notification.classList.add('show');
+      
+      setTimeout(() => {
+        notification.classList.remove('show');
+      }, 3000);
+    }
+
+    // Refresh UI with current data
+    function refreshUI() {
+      // Update stats
+      document.getElementById('streakVal').textContent = localStorage.getItem('streak') || '0';
+      document.getElementById('streakDone').textContent = localStorage.getItem('streak') || '0';
+      document.getElementById('focusRead').textContent = localStorage.getItem('focus') || '0';
+      document.getElementById('waterRead').textContent = localStorage.getItem('water') || '0';
+      document.getElementById('sleepRead').textContent = localStorage.getItem('sleep') || '0';
+      
+      // Update water count
+      document.getElementById('waterCount').textContent = localStorage.getItem('water') || '0';
+      
+      // Update tasks
+      renderTaskList();
+      
+      // Update subject stats
+      updateSubjectStats();
+      
+      // Update prayer status
+      updatePrayerStatus();
+      
+      // Update vault
+      updateVaultList();
+      
+      // Calculate daily progress
+      calculateDailyProgress();
+    }
+
+    // TASKS SECTION
+    function addTask() {
+      const input = document.getElementById('newTaskInput');
+      const text = input.value.trim();
+      
+      if (text) {
+        const tasks = JSON.parse(localStorage.getItem('tasks'));
+        tasks.push({
+          id: Date.now(),
+          text: text,
+          completed: false
+        });
+        
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+        input.value = '';
+        renderTaskList();
+        showNotification("New quest added!");
+      }
+    }
+
+    function renderTaskList() {
+      const taskList = document.getElementById('taskList');
+      const tasks = JSON.parse(localStorage.getItem('tasks'));
+      
+      taskList.innerHTML = '';
+      
+      if (tasks.length === 0) {
+        taskList.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-clipboard-list"></i>
+            <p>No quests in your log. Add a new quest to begin your journey!</p>
+          </div>
+        `;
+        return;
+      }
+      
+      let completedCount = 0;
+      
+      tasks.forEach(task => {
+        const taskItem = document.createElement('div');
+        taskItem.className = `task-item ${task.completed ? 'completed' : ''}`;
+        taskItem.dataset.id = task.id;
+        
+        taskItem.innerHTML = `
+          <div class="task-checkbox" onclick="toggleTask(${task.id})"></div>
+          <div class="task-text">${task.text}</div>
+          <div class="task-actions">
+            <button class="btn-sm" onclick="editTask(${task.id})"><i class="fas fa-edit"></i></button>
+            <button class="btn-sm" onclick="deleteTask(${task.id})"><i class="fas fa-trash"></i></button>
+          </div>
+        `;
+        
+        taskList.appendChild(taskItem);
+        
+        if (task.completed) completedCount++;
+      });
+      
+      // Update task stats
+      document.getElementById('taskDone').textContent = `${completedCount}/${tasks.length}`;
+    }
+
+    function toggleTask(id) {
+      const tasks = JSON.parse(localStorage.getItem('tasks'));
+      const taskIndex = tasks.findIndex(task => task.id === id);
+      
+      if (taskIndex !== -1) {
+        tasks[taskIndex].completed = !tasks[taskIndex].completed;
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+        renderTaskList();
+        showNotification(`Quest ${tasks[taskIndex].completed ? 'completed!' : 'marked incomplete'}`);
+      }
+    }
+
+    function editTask(id) {
+      const tasks = JSON.parse(localStorage.getItem('tasks'));
+      const taskIndex = tasks.findIndex(task => task.id === id);
+      
+      if (taskIndex !== -1) {
+        const newText = prompt('Edit quest:', tasks[taskIndex].text);
+        if (newText !== null && newText.trim() !== '') {
+          tasks[taskIndex].text = newText.trim();
+          localStorage.setItem('tasks', JSON.stringify(tasks));
+          renderTaskList();
+          showNotification("Quest updated!");
+        }
+      }
+    }
+
+    function deleteTask(id) {
+      const tasks = JSON.parse(localStorage.getItem('tasks'));
+      const updatedTasks = tasks.filter(task => task.id !== id);
+      localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+      renderTaskList();
+      showNotification("Quest deleted!");
+    }
+
+    // FOCUS TIMER SECTION
+    let focusInterval;
+    let focusStartTime;
+    let focusSeconds = 1500; // 25 minutes
+    
+    function startFocusTimer() {
+      document.getElementById('startFocusBtn').style.display = 'none';
+      document.getElementById('stopFocusBtn').style.display = 'inline-block';
+      
+      focusStartTime = Date.now();
+      updateFocusTimer();
+      
+      focusInterval = setInterval(updateFocusTimer, 1000);
+      showNotification("Focus session started!");
+    }
+    
+    function updateFocusTimer() {
+      const elapsedSeconds = Math.floor((Date.now() - focusStartTime) / 1000);
+      const remaining = focusSeconds - elapsedSeconds;
+      
+      if (remaining <= 0) {
+        stopFocusTimer();
+        showNotification('Focus session completed! Well done!');
+        return;
+      }
+      
+      const minutes = Math.floor(remaining / 60);
+      const seconds = remaining % 60;
+      
+      document.getElementById('focusTimer').textContent = 
+        `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+    
+    function stopFocusTimer() {
+      clearInterval(focusInterval);
+      
+      document.getElementById('startFocusBtn').style.display = 'inline-block';
+      document.getElementById('stopFocusBtn').style.display = 'none';
+      
+      const elapsedSeconds = Math.floor((Date.now() - focusStartTime) / 1000);
+      const minutes = Math.min(Math.floor(elapsedSeconds / 60), focusSeconds / 60);
+      
+      if (minutes > 0) {
+        const prev = parseInt(localStorage.getItem('focus') || '0');
+        localStorage.setItem('focus', prev + minutes);
+        document.getElementById('focusRead').textContent = prev + minutes;
+        showNotification(`Added ${minutes} focus minutes!`);
+      }
+      
+      // Reset timer display
+      document.getElementById('focusTimer').textContent = '25:00';
+      refreshUI();
+    }
+    
+    function resetFocusTimer() {
+      clearInterval(focusInterval);
+      document.getElementById('startFocusBtn').style.display = 'inline-block';
+      document.getElementById('stopFocusBtn').style.display = 'none';
+      document.getElementById('focusTimer').textContent = '25:00';
+    }
+
+    // HYDRATION SECTION
+    function addWater(amount) {
+      const prev = parseInt(localStorage.getItem('water') || '0');
+      const newAmount = prev + amount;
+      localStorage.setItem('water', newAmount);
+      
+      document.getElementById('waterRead').textContent = newAmount;
+      document.getElementById('waterCount').textContent = newAmount;
+      showNotification(`Added ${amount} water glass${amount > 1 ? 'es' : ''}!`);
+    }
+    
+    function resetWater() {
+      localStorage.setItem('water', '0');
+      document.getElementById('waterRead').textContent = '0';
+      document.getElementById('waterCount').textContent = '0';
+      showNotification("Water counter reset!");
+    }
+
+    // SLEEP SECTION
+    function saveSleep() {
+      const hours = parseFloat(document.getElementById('sleepInput').value) || 0;
+      localStorage.setItem('sleep', hours);
+      document.getElementById('sleepRead').textContent = hours;
+      showNotification(`Saved ${hours} hours of sleep!`);
+    }
+
+    // SUBJECTS SECTION
+    let subjectInterval;
+    let subjectStartTime;
+    
+    function startSubjectTimer() {
+      document.getElementById('startSubBtn').style.display = 'none';
+      document.getElementById('stopSubBtn').style.display = 'inline-block';
+      
+      subjectStartTime = Date.now();
+      updateSubjectTimer();
+      
+      subjectInterval = setInterval(updateSubjectTimer, 1000);
+      showNotification("Study session started!");
+    }
+    
+    function updateSubjectTimer() {
+      const elapsedSeconds = Math.floor((Date.now() - subjectStartTime) / 1000);
+      const minutes = Math.floor(elapsedSeconds / 60);
+      const seconds = elapsedSeconds % 60;
+      
+      document.getElementById('subjectTimer').textContent = 
+        `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+    
+    function stopSubjectTimer() {
+      clearInterval(subjectInterval);
+      
+      document.getElementById('startSubBtn').style.display = 'inline-block';
+      document.getElementById('stopSubBtn').style.display = 'none';
+      
+      const elapsedSeconds = Math.floor((Date.now() - subjectStartTime) / 1000);
+      const minutes = Math.floor(elapsedSeconds / 60);
+      
+      if (minutes > 0) {
+        const subject = document.getElementById('subSelect').value;
+        const key = `sub_${subject}`;
+        const prev = parseInt(localStorage.getItem(key) || '0');
+        localStorage.setItem(key, prev + minutes);
+        
+        document.getElementById('subRead').textContent = prev + minutes;
+        updateSubjectStats();
+        showNotification(`Added ${minutes} minutes to ${subject}!`);
+      }
+      
+      // Reset timer display
+      document.getElementById('subjectTimer').textContent = '00:00';
+    }
+    
+    function updateSubjectStats() {
+      const container = document.getElementById('subjectStats');
+      const subjects = [
+        { id: 'chemistry', name: 'Chemistry', icon: 'fa-flask' },
+        { id: 'physics', name: 'Physics', icon: 'fa-atom' },
+        { id: 'maths', name: 'Mathematics', icon: 'fa-calculator' },
+        { id: 'biology', name: 'Biology', icon: 'fa-dna' },
+        { id: 'english', name: 'English', icon: 'fa-book' },
+        { id: 'coding', name: 'Coding', icon: 'fa-code' }
+      ];
+      
+      let html = '<div class="stats-grid">';
+      let totalMinutes = 0;
+      
+      subjects.forEach(sub => {
+        const minutes = parseInt(localStorage.getItem(`sub_${sub.id}`) || '0');
+        totalMinutes += minutes;
+        
+        html += `
+          <div class="card">
+            <span class="icon"><i class="fas ${sub.icon}"></i></span>
+            <div class="metric">${minutes}</div>
+            <div class="card-label">${sub.name}</div>
+          </div>
+        `;
+      });
+      
+      html += '</div>';
+      container.innerHTML = html;
+      
+      // Update overall subject minutes
+      document.getElementById('subRead').textContent = totalMinutes;
+    }
+
+    // PRAYER SECTION
+    function loadPrayerTimes() {
+      const prayerTimes = JSON.parse(localStorage.getItem('prayerTimes'));
+      document.getElementById('fajrTime').value = prayerTimes.fajr;
+      document.getElementById('dhuhrTime').value = prayerTimes.dhuhr;
+      document.getElementById('asrTime').value = prayerTimes.asr;
+      document.getElementById('maghribTime').value = prayerTimes.maghrib;
+      document.getElementById('ishaTime').value = prayerTimes.isha;
+      
+      document.getElementById('fajrDisplay').textContent = formatTime(prayerTimes.fajr);
+      document.getElementById('dhuhrDisplay').textContent = formatTime(prayerTimes.dhuhr);
+      document.getElementById('asrDisplay').textContent = formatTime(prayerTimes.asr);
+      document.getElementById('maghribDisplay').textContent = formatTime(prayerTimes.maghrib);
+      document.getElementById('ishaDisplay').textContent = formatTime(prayerTimes.isha);
+    }
+    
+    function formatTime(timeStr) {
+      const [hours, minutes] = timeStr.split(':');
+      const hour = parseInt(hours);
+      const min = parseInt(minutes);
+      const period = hour >= 12 ? 'PM' : 'AM';
+      const formattedHour = hour % 12 || 12;
+      
+      return `${formattedHour}:${min.toString().padStart(2, '0')} ${period}`;
+    }
+    
+    function savePrayerTimes() {
+      const prayerTimes = {
+        fajr: document.getElementById('fajrTime').value,
+        dhuhr: document.getElementById('dhuhrTime').value,
+        asr: document.getElementById('asrTime').value,
+        maghrib: document.getElementById('maghribTime').value,
+        isha: document.getElementById('ishaTime').value
+      };
+      
+      localStorage.setItem('prayerTimes', JSON.stringify(prayerTimes));
+      loadPrayerTimes();
+      showNotification("Prayer times saved!");
+    }
+    
+    function togglePrayer(prayer) {
+      const prayers = JSON.parse(localStorage.getItem('prayers'));
+      prayers[prayer] = !prayers[prayer];
+      localStorage.setItem('prayers', JSON.stringify(prayers));
+      updatePrayerStatus();
+      showNotification(`${prayer.charAt(0).toUpperCase() + prayer.slice(1)} marked as ${prayers[prayer] ? 'completed!' : 'pending'}`);
+    }
+    
+    function updatePrayerStatus() {
+      const prayers = JSON.parse(localStorage.getItem('prayers'));
+      let completedCount = 0;
+      
+      document.querySelectorAll('.prayer-card').forEach(card => {
+        const prayer = card.dataset.prayer;
+        const completed = prayers[prayer];
+        
+        if (completed) {
+          card.classList.add('completed');
+          card.querySelector('.prayer-status').textContent = 'Completed';
+          completedCount++;
+        } else {
+          card.classList.remove('completed');
+          card.querySelector('.prayer-status').textContent = 'Pending';
+        }
+      });
+      
+      // Update progress bar
+      const progress = (completedCount / 5) * 100;
+      document.getElementById('prayerProgress').style.width = `${progress}%`;
+      document.getElementById('prayerText').textContent = `${completedCount}/5 Prayers`;
+    }
+
+    // VAULT SECTION
+    function addVault() {
+      const input = document.getElementById('vaultInput');
+      const text = input.value.trim();
+      
+      if (text) {
+        const todayKey = new Date().toLocaleDateString().replace(/\//g, '-');
+        const vault = JSON.parse(localStorage.getItem(`vault_${todayKey}`) || []);
+        vault.push(text);
+        
+        localStorage.setItem(`vault_${todayKey}`, JSON.stringify(vault));
+        input.value = '';
+        updateVaultList();
+        showNotification("Memory added to vault!");
+      }
+    }
+    
+    function updateVaultList() {
+      const list = document.getElementById('vaultList');
+      const todayKey = new Date().toLocaleDateString().replace(/\//g, '-');
+      const vault = JSON.parse(localStorage.getItem(`vault_${todayKey}`) || []);
+      
+      list.innerHTML = '';
+      
+      if (vault.length === 0) {
+        list.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-book-open"></i>
+            <p>Your memory vault is empty. Add something memorable from today!</p>
+          </div>
+        `;
+        return;
+      }
+      
+      vault.forEach((memory, index) => {
+        const div = document.createElement('div');
+        div.className = 'vault-item';
+        
+        div.innerHTML = `
+          <div class="content">${memory}</div>
+          <div class="actions">
+            <button class="btn-sm" onclick="editVault(${index})"><i class="fas fa-edit"></i></button>
+            <button class="btn-sm" onclick="delVault(${index})"><i class="fas fa-trash"></i></button>
+          </div>
+        `;
+        
+        list.appendChild(div);
+      });
+    }
+    
+    function editVault(index) {
+      const todayKey = new Date().toLocaleDateString().replace(/\//g, '-');
+      const vault = JSON.parse(localStorage.getItem(`vault_${todayKey}`) || []);
+      
+      if (index >= 0 && index < vault.length) {
+        const newText = prompt('Edit memory:', vault[index]);
+        if (newText !== null) {
+          vault[index] = newText.trim();
+          localStorage.setItem(`vault_${todayKey}`, JSON.stringify(vault));
+          updateVaultList();
+          showNotification("Memory updated!");
+        }
+      }
+    }
+    
+    function delVault(index) {
+      const todayKey = new Date().toLocaleDateString().replace(/\//g, '-');
+      const vault = JSON.parse(localStorage.getItem(`vault_${todayKey}`) || []);
+      
+      if (index >= 0 && index < vault.length) {
+        vault.splice(index, 1);
+        localStorage.setItem(`vault_${todayKey}`, JSON.stringify(vault));
+        updateVaultList();
+        showNotification("Memory deleted!");
+      }
+    }
+
+    // HISTORY SECTION
+    function loadHistory() {
+      const dateInput = document.getElementById('historyDate');
+      const date = new Date(dateInput.value);
+      
+      if (!dateInput.value) {
+        showNotification("Please select a date");
+        return;
+      }
+      
+      const dateKey = date.toLocaleDateString().replace(/\//g, '-');
+      const historyView = document.getElementById('historyView');
+      historyView.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Loading history...</p></div>';
+      
+      setTimeout(() => {
+        // In a real app, we would fetch from a database
+        // For this demo, we'll simulate with localStorage data
+        let html = `
+          <div class="history-date">${date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</div>
+          <div class="history-grid">
+            <div class="history-card">
+              <div class="card-label">Tasks Completed</div>
+              <div class="metric">${Math.floor(Math.random() * 10)}/${Math.floor(Math.random() * 15)}</div>
+            </div>
+            <div class="history-card">
+              <div class="card-label">Focus Minutes</div>
+              <div class="metric">${Math.floor(Math.random() * 120)}</div>
+            </div>
+            <div class="history-card">
+              <div class="card-label">Water Glasses</div>
+              <div class="metric">${Math.floor(Math.random() * 10)}</div>
+            </div>
+            <div class="history-card">
+              <div class="card-label">Sleep Hours</div>
+              <div class="metric">${(Math.random() * 4 + 4).toFixed(1)}</div>
+            </div>
+            <div class="history-card">
+              <div class="card-label">Study Minutes</div>
+              <div class="metric">${Math.floor(Math.random() * 180)}</div>
+            </div>
+          </div>
+        `;
+        
+        historyView.innerHTML = html;
+      }, 500);
+    }
+
+    // PROGRESS CALCULATION & NOTIFICATIONS
+    let lastNotified = 0;
+    
+    function calculateDailyProgress() {
+      let progress = 0;
+      const maxPoints = 8; // Adjust based on your metrics
+      
+      // Tasks
+      const tasks = JSON.parse(localStorage.getItem('tasks'));
+      if (tasks.length > 0) {
+        const completedTasks = tasks.filter(t => t.completed).length;
+        progress += Math.min(completedTasks / tasks.length, 1) * 2; // Up to 2 points
+      }
+      
+      // Focus time
+      const focusMins = parseInt(localStorage.getItem('focus') || '0');
+      if (focusMins >= 60) progress += 2; // 2 points for 60+ mins
+      else if (focusMins >= 30) progress += 1; // 1 point for 30+ mins
+      
+      // Water
+      const water = parseInt(localStorage.getItem('water') || '0');
+      if (water >= 8) progress += 1; // 1 point for 8+ glasses
+      else if (water >= 4) progress += 0.5; // 0.5 points for 4+ glasses
+      
+      // Sleep
+      const sleep = parseFloat(localStorage.getItem('sleep') || '0');
+      if (sleep >= 7) progress += 1; // 1 point for 7+ hours
+      else if (sleep >= 6) progress += 0.5; // 0.5 points for 6+ hours
+      
+      // Subjects
+      const subjects = ['chemistry', 'physics', 'maths', 'biology', 'english', 'coding'];
+      let studyMins = 0;
+      subjects.forEach(sub => {
+        studyMins += parseInt(localStorage.getItem(`sub_${sub}`) || '0');
+      });
+      
+      if (studyMins >= 60) progress += 1; // 1 point for 60+ mins
+      else if (studyMins >= 30) progress += 0.5; // 0.5 points for 30+ mins
+      
+      // Prayer
+      const prayers = JSON.parse(localStorage.getItem('prayers'));
+      const completedPrayers = Object.values(prayers).filter(p => p).length;
+      progress += completedPrayers * 0.4; // 0.4 points per prayer
+      
+      // Cap at max points
+      progress = Math.min(progress, maxPoints);
+      
+      // Calculate percentage
+      const percentage = Math.round((progress / maxPoints) * 100);
+      document.getElementById('dailyProgress').style.width = `${percentage}%`;
+      document.getElementById('progressText').textContent = `${percentage}% Complete`;
+      
+      // Notifications at milestones
+      const milestones = [10, 15, 25, 35, 50, 60, 70, 85, 95, 100];
+      if (milestones.includes(percentage)) {
+        if (percentage > lastNotified) {
+          showNotification(`Daily progress: ${percentage}% complete!`);
+          lastNotified = percentage;
+        }
+      }
+    }
+  </script>
+</body>
+</html>
